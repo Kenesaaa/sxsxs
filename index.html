@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Love Letter</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(to bottom, #ffe4ec, #f8bbd0);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+
+    .envelope {
+      position: relative;
+      width: 320px;
+      height: 220px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .envelope-body {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #d63384;
+      border-radius: 0 0 15px 15px;
+      z-index: 1;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    .envelope-flap {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 160px solid transparent;
+      border-right: 160px solid transparent;
+      border-bottom: 100px solid #e83e8c;
+      top: 0;
+      left: 0;
+      transform-origin: top;
+      transition: transform 0.6s ease-in-out;
+      z-index: 2;
+    }
+
+    .envelope.open .envelope-flap {
+      transform: rotateX(180deg);
+    }
+
+    .click-here {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 22px;
+      color: #fff;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+      z-index: 3;
+    }
+
+    .message {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      opacity: 0;
+      z-index: 4;
+      text-align: center;
+      transition: opacity 1s ease;
+    }
+
+    .envelope.open .message {
+      opacity: 1;
+      animation: slideUp 1s ease forwards;
+    }
+
+    .message p {
+      margin: 10px 0;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInText 0.8s ease forwards;
+    }
+
+    .message p:nth-child(1) { animation-delay: 1s; }
+    .message p:nth-child(2) { animation-delay: 2s; }
+    .message p:nth-child(3) { animation-delay: 3s; }
+    .message p:nth-child(4) { animation-delay: 4s; }
+
+    .heart {
+      position: absolute;
+      pointer-events: none;
+      font-size: 20px;
+      color: red;
+      animation: float linear forwards;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    @keyframes slideUp {
+      to { top: -220px; }
+    }
+
+    @keyframes fadeInText {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      to {
+        transform: translate(var(--endX), var(--endY)) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="envelope" id="envelope">
+    <div class="envelope-body"></div>
+    <div class="envelope-flap"></div>
+    <div class="click-here" id="clickText">Click here 💌</div>
+    <div class="message" id="messageBox">
+      <p>I wanted to tell you something special...</p>
+      <p>But words sometimes fail me.</p>
+      <p>So I made this little letter with love 💕</p>
+      <p>Hope it brings a smile to your face 😊</p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('envelope').addEventListener('click', function () {
+      const envelope = this;
+      envelope.classList.add('open');
+      document.getElementById('clickText').style.display = 'none';
+      createHeartExplosion();
+    });
+
+    function createHeartExplosion() {
+      const heartColors = ['#ff0000', '#ff69b4', '#ff1493', '#ff85a2'];
+      const count = 200;
+
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'heart';
+          const startX = window.innerWidth / 2;
+          const startY = window.innerHeight / 2;
+          const angle = Math.random() * 2 * Math.PI;
+          const distance = Math.random() * 400 + 100;
+          const endX = Math.cos(angle) * distance + 'px';
+          const endY = Math.sin(angle) * distance + 'px';
+          const size = Math.random() * 20 + 10;
+
+          heart.style.left = startX + 'px';
+          heart.style.top = startY + 'px';
+          heart.style.setProperty('--endX', endX);
+          heart.style.setProperty('--endY', endY);
+          heart.style.fontSize = size + 'px';
+          heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
+          heart.textContent = '❤️';
+
+          document.body.appendChild(heart);
+
+          setTimeout(() => {
+            heart.remove();
+          }, 4000);
+        }, Math.random() * 2000);
+      }
+    }
+  </script>
+</body>
+</html>
